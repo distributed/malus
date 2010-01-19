@@ -5,7 +5,7 @@ GOFILES=callmanager.go\
 	udp.go\
 	utility.go\
 	webinterface.go\
-	sleepqueue.go
+	sleepqueue.go\
 	host.go\
 	routing.go
 
