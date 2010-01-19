@@ -6,5 +6,6 @@ GOFILES=callmanager.go\
 	utility.go\
 	webinterface.go\
 	sleepqueue.go
+	routing.go
 
 include $(GOROOT)/src/Make.pkg

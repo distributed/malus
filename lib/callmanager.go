@@ -135,10 +135,11 @@ type CallManager struct {
 	regchan     chan *RunningRPC
 	inchan      chan *RPC
 	timeout  int64
+	rt RoutingTable
 }
 
 
-func NewCallManager(transceiver Transceiver) *CallManager {
+func NewCallManager(transceiver Transceiver, rt RoutingTable) *CallManager {
 	cm := new(CallManager)
 
 	cm.rpcmap = make(map[string](*rpcentry), 8)
@@ -149,6 +150,7 @@ func NewCallManager(transceiver Transceiver) *CallManager {
 	cm.regchan = make(chan *RunningRPC)
 	cm.inchan = make(chan *RPC)
 	cm.timeout = TIMEOUT
+	cm.rt = rt
 
 	return cm
 }
@@ -206,6 +208,9 @@ func (cm *CallManager) constructAnswer(req *RPC, retcall uint8, retis []interfac
 
 // TODO: errors...
 func (cm *CallManager) DispatchRPC(rpc *RPC) {
+	if cm.rt != nil {
+		cm.rt.SeeHost(rpc.From)
+	}
 	switch rpc.Header.Call {
 	case 0x01:
 		retcall, retis, err := cm.DispatchRequest(rpc)

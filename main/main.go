@@ -24,8 +24,12 @@ func main() {
 		panic("could not make transceiver")
 	}
 
-	cm := malus.NewCallManager(tr)
 	id := malus.SHA1String(strconv.Itoa(laddr.Port))
+
+
+	rt := malus.NewBRoutingTable(id)
+
+	cm := malus.NewCallManager(tr, rt)
 	cm.Id = id
 	cm.AddRPC("ping", malus.Ping)
 	cm.AddRPC("store", malus.Store)
