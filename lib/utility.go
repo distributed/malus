@@ -13,6 +13,7 @@ type Distance []byte;
 func (d Distance) String() string {
 	return hex.EncodeToString(d)
 }
+const K = 20
 func SHA1Bytes(b []byte) string {
 	h := sha1.New()
 	h.Write(b)
