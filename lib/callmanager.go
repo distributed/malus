@@ -108,6 +108,8 @@ type RPC struct {
 	RPCFrame *RPCFrame
 	Payload  interface{}
 	Packet   *Packet
+	From *Host
+	To *Host
 }
 
 
@@ -554,6 +556,12 @@ func (cm *CallManager) DispatchPacket(packet *Packet) {
 	}
 
 	t1 = time.Nanoseconds()
+
+
+	from := NewHost(packet.From, rpc.Header.Sender)
+	rpc.From = from
+	fmt.Printf("FROM: %v\n", from)
+
 	cm.DispatchRPC(rpc)
 	t2 = time.Nanoseconds()
 	//fmt.Printf("DispatchRPC: %d us\n", (t2-t1)/1000)
