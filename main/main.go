@@ -25,7 +25,8 @@ func main() {
 	}
 
 	cm := malus.NewCallManager(tr)
-	cm.Id = malus.SHA1String(strconv.Itoa(laddr.Port))
+	id := malus.SHA1String(strconv.Itoa(laddr.Port))
+	cm.Id = id
 	cm.AddRPC("ping", malus.Ping)
 	cm.AddRPC("store", malus.Store)
 
