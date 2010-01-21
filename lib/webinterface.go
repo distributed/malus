@@ -78,6 +78,16 @@ func (wi *WebInterface) getDummy() (func(*http.Conn, *http.Request)) {
 			}
 		case "rt":
 			fmt.Fprintf(c, "%s\n", wi.rt.GetHTML())
+		case "seedrt":
+			seedmax := 1000
+			for i := 0; i < seedmax; i++ {
+				h := new(Host)
+				ps := fmt.Sprintf("%d", i + 5000)
+				h.Addr, _ = net.ResolveUDPAddr("127.0.0.1:" + ps)
+				h.Id = SHA1String(ps)
+				wi.rt.SeeHost(h)
+			}
+			fmt.Fprintf(c, "seed rt with %d hosts<br>\n", seedmax)
 		default:
 			c.Write(strings.Bytes("das esch de rap shit: " + req.FormValue("rpc") + "<br> <a href=\"?rpc=ping\">ping now!</a><br>"))
 			fmt.Fprintf(c, "fuck\n")
