@@ -66,3 +66,27 @@ func BucketNo(d Distance) uint {
 	
 	return basebitnr
 }
+
+
+func (a Distance) Less(b Distance) bool {
+	if len(a) != len(b) {
+		panicln("comparing distances of different lengths")
+	}
+
+	//fmt.Printf("distance Less called: %v < %v\n", a, b)
+
+	for i, ea := range(a) {
+		eb := b[i]
+		switch {
+		case ea < eb:
+			//fmt.Printf("got < due to %x < %x\n", ea, eb)
+			return true
+		case ea > eb:
+			//fmt.Printf("got > due to %x > %x\n", ea, eb)
+			return false
+		default:
+			//fmt.Printf("got == due to %x == %x\n", ea, eb)
+		}
+	}
+	return false
+}
