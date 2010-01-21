@@ -10,6 +10,10 @@ import (
 
 type RoutingTable interface {
 	SeeHost(h *Host)
+	// may return ""
+	GetString() string
+	// may return "", subject to change
+	GetHTML() string
 }
 
 
@@ -20,6 +24,8 @@ type BRoutingTable struct {
 
 	seehost chan *Host
 	quitchan chan bool
+	stringchan chan chan string
+	htmlchan chan chan string
 
 	Log bool
 	logger *log.Logger
@@ -67,6 +73,10 @@ func (rt *BRoutingTable) main() {
 			rt.seeHost(h)
 		case <- rt.quitchan:
 			return
+		case r := <- rt.stringchan:
+			r <- rt.string()
+		case r := <- rt.htmlchan:
+			r <- rt.html()
 		}
 	}
 }
@@ -216,7 +226,8 @@ func (rt *BRoutingTable) balanceleftright(lefti uint) {
 }
 
 
-func (rt *BRoutingTable) String() string {
+// not goroutine safe
+func (rt *BRoutingTable) string() string {
 	buf := bytes.NewBuffer(nil)
 
 	buf.WriteString("BRoutingTable ===>\n")
@@ -229,4 +240,45 @@ func (rt *BRoutingTable) String() string {
 	
 	buf.WriteString("<===\n")
 	return buf.String()
+}
+
+// not goroutine safe
+func (rt *BRoutingTable) html() string {
+	buf := bytes.NewBuffer(nil)
+
+	buf.WriteString("BRoutingTable<br>\n<table>\n<tr>\n")
+
+	for b := 0; b <= rt.maxbucket; b++ {
+		buf.WriteString(fmt.Sprintf("<th>Bucket %d</th>\n", b))
+	}
+
+	buf.WriteString("</tr>\n")
+
+	for b := 0; b <= rt.maxbucket; b++ {
+		buf.WriteString("<td>")
+		for _, rth := range rt.buckets[b].hosts {
+			buf.WriteString(fmt.Sprintf("\t%x | %v @ %v<br>\n", rth.host.Id, XOR(rth.host.Id, rt.id)[0:5], rth.host.Addr))
+		}
+		buf.WriteString("</td>")
+	}
+
+	buf.WriteString("</tr>")
+	
+	buf.WriteString("</table>")
+	return buf.String()
+}
+
+
+// goroutine safe. not for internal use!
+func (rt *BRoutingTable) GetString() string {
+	r := make(chan string)
+	rt.stringchan <- r
+	return <- r
+}
+
+// goroutine safe. not for internal use!
+func (rt *BRoutingTable) GetHTML() string {
+	r := make(chan string)
+	rt.htmlchan <- r
+	return <- r
 }
