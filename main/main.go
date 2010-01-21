@@ -52,7 +52,7 @@ func main() {
 
 	{
 		fmt.Printf("creating WI\n")
-		wi := malus.NewWebInterface(":9000", cm)
+		wi := malus.NewWebInterface(":9000", cm, rt)
 		fmt.Printf("now running WI\n")
 		err := wi.Run()
 		if err != nil {

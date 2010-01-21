@@ -15,14 +15,16 @@ type WebInterface struct {
 	addr string
 	cm *CallManager
 	sm *http.ServeMux
+	rt RoutingTable
 	reqcounter *expvar.Int
 }
 
 
-func NewWebInterface(addr string, cm *CallManager) *WebInterface {
+func NewWebInterface(addr string, cm *CallManager, rt RoutingTable) *WebInterface {
 	wi := new(WebInterface)
 	wi.addr = addr
 	wi.cm = cm
+	wi.rt = rt
 	wi.sm = http.NewServeMux()
 	wi.reqcounter = expvar.NewInt("")
 
@@ -74,6 +76,8 @@ func (wi *WebInterface) getDummy() (func(*http.Conn, *http.Request)) {
 			} else {
 				fmt.Fprintf(c, "failed to resolve addr! err %v\n", err)
 			}
+		case "rt":
+			fmt.Fprintf(c, "%s\n", wi.rt.GetHTML())
 		default:
 			c.Write(strings.Bytes("das esch de rap shit: " + req.FormValue("rpc") + "<br> <a href=\"?rpc=ping\">ping now!</a><br>"))
 			fmt.Fprintf(c, "fuck\n")
