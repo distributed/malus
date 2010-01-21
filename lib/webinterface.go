@@ -59,6 +59,7 @@ func (wi *WebInterface) getDummy() (func(*http.Conn, *http.Request)) {
 		wi.reqcounter.Add(1)
 		raddr, _ := net.ResolveUDPAddr("127.0.0.1:8001")
 		fmt.Printf("WI calling raddr %v\n", raddr)
+		fmt.Fprintf(c, "<tt>\n")
 		switch req.FormValue("rpc") {
 		case "ping":
 			c.Write(strings.Bytes("pinging... <br>"))
@@ -93,6 +94,7 @@ func (wi *WebInterface) getDummy() (func(*http.Conn, *http.Request)) {
 			fmt.Fprintf(c, "fuck\n")
 		}
 		fmt.Fprintf(c, "<br><br>req counter: %s\n", wi.reqcounter.String())
+		fmt.Fprintf(c, "</tt>")
 	}
 
 
