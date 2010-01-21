@@ -9,8 +9,8 @@ import (
 	//"io/ioutil"
 	//"reflect"
 	"strconv"
-//	"http"
-//	"strings"
+	//	"http"
+	//	"strings"
 )
 
 func main() {
@@ -26,7 +26,6 @@ func main() {
 
 	id := malus.SHA1String(strconv.Itoa(laddr.Port))
 
-
 	rt := malus.NewBRoutingTable(id)
 
 	cm := malus.NewCallManager(tr, rt)
@@ -37,18 +36,16 @@ func main() {
 	fmt.Printf("registered\n")
 
 	/*print(bts)
-		fmt.Printf("\n%v\n", bts)*/
+			fmt.Printf("\n%v\n", bts)*/
 
 	go tr.Run()
 	go cm.Run()
-
 
 	raddr, _ := net.ResolveUDPAddr("127.0.0.1:8001")
 	fmt.Printf("calling..\n")
 	retis, err := cm.Call(raddr, "ping", make([]interface{}, 0))
 
 	fmt.Printf("=> ping done! <err %v> <retis %v>\n", err, retis)
-
 
 	{
 		fmt.Printf("creating WI\n")
@@ -62,7 +59,7 @@ func main() {
 		fmt.Printf("WebInterface running\n")
 	}
 
-/*	{
+	/*	{
 		http.Handle("/", http.HandlerFunc(dummyhandle))
 		err := http.ListenAndServe(":9000", nil)
 		if err != nil {

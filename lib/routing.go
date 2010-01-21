@@ -6,7 +6,7 @@ import (
 	"log"
 	"bytes"
 	"fmt"
-	)
+)
 
 type RoutingTable interface {
 	SeeHost(h *Host)
@@ -18,22 +18,22 @@ type RoutingTable interface {
 
 
 type BRoutingTable struct {
-	id string
-	buckets [](*Bucket)
+	id        string
+	buckets   [](*Bucket)
 	maxbucket int
 
-	seehost chan *Host
-	quitchan chan bool
+	seehost    chan *Host
+	quitchan   chan bool
 	stringchan chan chan string
-	htmlchan chan chan string
+	htmlchan   chan chan string
 
-	Log bool
+	Log    bool
 	logger *log.Logger
 }
 
 
 type RTHost struct {
-	host *Host
+	host     *Host
 	distance Distance
 }
 
@@ -47,9 +47,9 @@ func NewBRoutingTable(id string) (rt *BRoutingTable) {
 
 	rt.id = id
 
-	rt.buckets = make([](*Bucket), HASHLEN * 8)
+	rt.buckets = make([](*Bucket), HASHLEN*8)
 	firstbucket := new(Bucket)
-	firstbucket.hosts = make([](*RTHost), K + 1)[0:0]
+	firstbucket.hosts = make([](*RTHost), K+1)[0:0]
 
 	rt.buckets[0] = firstbucket
 	rt.maxbucket = 0
@@ -69,22 +69,20 @@ func NewBRoutingTable(id string) (rt *BRoutingTable) {
 func (rt *BRoutingTable) main() {
 	for {
 		select {
-		case h := <- rt.seehost:
+		case h := <-rt.seehost:
 			rt.seeHost(h)
-		case <- rt.quitchan:
+		case <-rt.quitchan:
 			return
-		case r := <- rt.stringchan:
+		case r := <-rt.stringchan:
 			r <- rt.string()
-		case r := <- rt.htmlchan:
+		case r := <-rt.htmlchan:
 			r <- rt.html()
 		}
 	}
 }
 
 
-func (rt *BRoutingTable) SeeHost(h *Host) {
-	rt.seehost <- h
-}
+func (rt *BRoutingTable) SeeHost(h *Host) { rt.seehost <- h }
 
 
 func (rt *BRoutingTable) seeHost(h *Host) {
@@ -92,7 +90,7 @@ func (rt *BRoutingTable) seeHost(h *Host) {
 		rt.logger.Logf("see host: %v dist %v\n", h, XOR(h.Id, rt.id)[0:5])
 	}
 	bucketno, pos, maxbucketno := rt.findHost(h)
-	/*rt.logger.Logf("is in %d/%d maxbucketno %d\n", bucketno, pos, maxbucketno) 
+	/*rt.logger.Logf("is in %d/%d maxbucketno %d\n", bucketno, pos, maxbucketno)
 	rt.logger.Logf("dist %v to %v\n", XOR(h.Id, rt.id), h)
 	rt.logger.Logf("own id is %x\n", rt.id)
 	rt.logger.Logf("h.Id is %x", h.Id)*/
@@ -111,7 +109,7 @@ func (rt *BRoutingTable) seeHost(h *Host) {
 			if rt.Log {
 				rt.logger.Logf("bucket %d not full yet -> inserting\n", bucketno)
 			}
-			bucket.hosts = bucket.hosts[0:hl+1]
+			bucket.hosts = bucket.hosts[0 : hl+1]
 			bucket.hosts[hl] = rthost
 		} else {
 			if maxbucketno == bucketno {
@@ -120,7 +118,7 @@ func (rt *BRoutingTable) seeHost(h *Host) {
 				}
 			} else {
 				rt.newBucket()
-				bucket.hosts = bucket.hosts[0:hl+1]
+				bucket.hosts = bucket.hosts[0 : hl+1]
 				bucket.hosts[hl] = rthost
 				rt.balanceleftright(uint(bucketno))
 			}
@@ -137,16 +135,16 @@ func (rt *BRoutingTable) seeHost(h *Host) {
 
 
 func (rt *BRoutingTable) newBucket() *Bucket {
-	if rt.maxbucket == (HASHLEN * 8 - 1) {
+	if rt.maxbucket == (HASHLEN*8 - 1) {
 		return nil
 	}
 
 	b := new(Bucket)
-	b.hosts = make([](*RTHost), K + 1)[0:0]
+	b.hosts = make([](*RTHost), K+1)[0:0]
 
 	rt.maxbucket++
 	rt.buckets[rt.maxbucket] = b
-	
+
 	return b
 }
 
@@ -188,8 +186,8 @@ func (rt *BRoutingTable) balanceleftright(lefti uint) {
 	left := rt.buckets[lefti]
 	right := rt.buckets[righti]
 
-	newleft := make([](*RTHost), K + 1)
-	newright := make([](*RTHost), K + 1)
+	newleft := make([](*RTHost), K+1)
+	newright := make([](*RTHost), K+1)
 
 	nleft := 0
 	nright := 0
@@ -215,13 +213,13 @@ func (rt *BRoutingTable) balanceleftright(lefti uint) {
 	}
 
 	rt.logger.Logf("rebalanced to %d/%d\n", nleft, nright)
-	
+
 	newleft = newleft[0:nleft]
 	newright = newright[0:nright]
 
 	left.hosts = newleft
 	right.hosts = newright
-	
+
 	fmt.Printf("%v", rt)
 }
 
@@ -237,7 +235,7 @@ func (rt *BRoutingTable) string() string {
 			buf.WriteString(fmt.Sprintf("\t%x | %v @ %v\n", rth.host.Id, XOR(rth.host.Id, rt.id)[0:5], rth.host.Addr))
 		}
 	}
-	
+
 	buf.WriteString("<===\n")
 	return buf.String()
 }
@@ -263,7 +261,7 @@ func (rt *BRoutingTable) html() string {
 	}
 
 	buf.WriteString("</tr>")
-	
+
 	buf.WriteString("</table>")
 	return buf.String()
 }
@@ -273,12 +271,12 @@ func (rt *BRoutingTable) html() string {
 func (rt *BRoutingTable) GetString() string {
 	r := make(chan string)
 	rt.stringchan <- r
-	return <- r
+	return <-r
 }
 
 // goroutine safe. not for internal use!
 func (rt *BRoutingTable) GetHTML() string {
 	r := make(chan string)
 	rt.htmlchan <- r
-	return <- r
+	return <-r
 }

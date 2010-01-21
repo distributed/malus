@@ -51,7 +51,9 @@ type Header struct {
 func (h *Header) String() string {
 	b := bytes.NewBufferString("")
 
-	if h == nil { return "<*Header: nil>" }
+	if h == nil {
+		return "<*Header: nil>"
+	}
 
 	b.WriteString("Header {\n")
 
@@ -108,8 +110,8 @@ type RPC struct {
 	RPCFrame *RPCFrame
 	Payload  interface{}
 	Packet   *Packet
-	From *Host
-	To *Host
+	From     *Host
+	To       *Host
 }
 
 
@@ -126,7 +128,7 @@ type Packet struct {
 
 
 type CallManager struct {
-	Id string
+	Id          string
 	rpcmap      map[string](*rpcentry)
 	transceiver Transceiver
 	logger      *log.Logger
@@ -134,8 +136,8 @@ type CallManager struct {
 	running     map[uint64]*RunningRPC
 	regchan     chan *RunningRPC
 	inchan      chan *RPC
-	timeout  int64
-	rt RoutingTable
+	timeout     int64
+	rt          RoutingTable
 }
 
 
@@ -166,7 +168,7 @@ func (cm *CallManager) manageRunning() {
 		case r := <-cm.regchan:
 			running[r.rpc.Header.Id] = r
 			// TODO: manage with queue
-			go func(id uint64){
+			go func(id uint64) {
 				// TODO: check EINTR
 				time.Sleep(cm.timeout)
 				timeout <- id
@@ -178,7 +180,7 @@ func (cm *CallManager) manageRunning() {
 				runningrpc.retchan <- rpc
 				running[Id] = nil, false
 			}
-		case id := <- timeout:
+		case id := <-timeout:
 			if runningrpc, ok := running[id]; ok {
 				runningrpc.retchan <- nil
 				running[id] = nil, false
@@ -562,7 +564,6 @@ func (cm *CallManager) DispatchPacket(packet *Packet) {
 
 	t1 = time.Nanoseconds()
 
-
 	from := NewHost(packet.From, rpc.Header.Sender)
 	rpc.From = from
 	fmt.Printf("FROM: %v\n", from)
@@ -627,17 +628,15 @@ func (cm *CallManager) Call(addr net.Addr, name string, args []interface{}) (ret
 	if retrpc == nil {
 		return nil, RPCError("time out")
 	}
-	
+
 	if retis, ok := retrpc.Payload.([]interface{}); ok {
 		return retis, nil
 	}
-
 
 	if cm.log {
 		cm.logger.Logf("return payload was not []interface{}\n")
 	}
 	return nil, nil
-
 
 }
 

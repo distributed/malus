@@ -12,10 +12,10 @@ import (
 
 
 type WebInterface struct {
-	addr string
-	cm *CallManager
-	sm *http.ServeMux
-	rt RoutingTable
+	addr       string
+	cm         *CallManager
+	sm         *http.ServeMux
+	rt         RoutingTable
 	reqcounter *expvar.Int
 }
 
@@ -34,12 +34,10 @@ func NewWebInterface(addr string, cm *CallManager, rt RoutingTable) *WebInterfac
 }
 
 
-
 func (wi *WebInterface) Run() (err os.Error) {
 	err = http.ListenAndServe(wi.addr, wi.sm)
 	return
 }
-
 
 
 // this function wraps handlers defined as methods of a WebInterface
@@ -83,7 +81,7 @@ func (wi *WebInterface) getDummy() (func(*http.Conn, *http.Request)) {
 			seedmax := 1000
 			for i := 0; i < seedmax; i++ {
 				h := new(Host)
-				ps := fmt.Sprintf("%d", i + 5000)
+				ps := fmt.Sprintf("%d", i+5000)
 				h.Addr, _ = net.ResolveUDPAddr("127.0.0.1:" + ps)
 				h.Id = SHA1String(ps)
 				wi.rt.SeeHost(h)
@@ -97,7 +95,5 @@ func (wi *WebInterface) getDummy() (func(*http.Conn, *http.Request)) {
 		fmt.Fprintf(c, "</tt>")
 	}
 
-
-
-	return dummy	
+	return dummy
 }
