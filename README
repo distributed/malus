@@ -1,0 +1,5 @@
+Malus is a Kademlia style DHT written in Go. It should be RPC
+compatible with kademlua, also hosted on github. This goal is partly
+achieved. The implementation is very raw and as of 2010/1/21
+incomplete. Please note that this is kind of a toy project of
+mine. It's not like it could survive in a world full of NAT routers ;)
