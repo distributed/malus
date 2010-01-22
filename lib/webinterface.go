@@ -77,6 +77,12 @@ func (wi *WebInterface) getDummy() (func(*http.Conn, *http.Request)) {
 			}
 		case "rt":
 			fmt.Fprintf(c, "%s\n", wi.rt.GetHTML())
+		case "closest":
+			target := SHA1String("8006")
+			cl := wi.rt.GetClosest(target, 20).Data()
+			for _, el := range cl {
+				fmt.Fprintf(c, "%x | %v @ %v<br>\n", el.Host.Id, el.Distance, el.Host.Addr)
+			}
 		case "seedrt":
 			seedmax := 1000
 			for i := 0; i < seedmax; i++ {
