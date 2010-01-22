@@ -8,6 +8,7 @@ import (
 	"os"
 	"net"
 	"expvar"
+	"malloc"
 )
 
 
@@ -93,6 +94,11 @@ func (wi *WebInterface) getDummy() (func(*http.Conn, *http.Request)) {
 				wi.rt.SeeHost(h)
 			}
 			fmt.Fprintf(c, "seed rt with %d hosts<br>\n", seedmax)
+		case "gc":
+			malloc.GC()
+			stats := malloc.GetStats()
+			fmt.Fprintf(c, "stats: %v<br>\n", stats)
+			fmt.Fprintf(c, "=&gt; %d kbyte alloc / %d kbyte sys<br>\n", stats.Alloc / 1024, stats.Sys / 1024)
 		default:
 			c.Write(strings.Bytes("das esch de rap shit: " + req.FormValue("rpc") + "<br> <a href=\"?rpc=ping\">ping now!</a><br>"))
 			fmt.Fprintf(c, "fuck\n")
