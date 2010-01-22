@@ -103,6 +103,12 @@ func (l *RTHostList) Sort() {
 	sort.Sort(l)
 }
 
+func (l *RTHostList) PopFront() (h *RTHost) {
+	h = l.v.At(0).(*RTHost)
+	l.v.Cut(0, 0)
+	return
+}
+
 func (l *RTHostList) Data() []*RTHost {
 	v := l.v
 	vl := v.Len()
