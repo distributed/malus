@@ -33,9 +33,22 @@ func main() {
 	cm.AddRPC("ping", malus.Ping)
 	cm.AddRPC("store", malus.Store)
 
-	findnode := func(rpc *malus.RPC, id string) []interface{} {
-		closest := rt.GetClosest().Data()
-		return make([]interface{}, 0)
+	findnode := func(rpc *malus.RPC, id string) (hostlist []interface{}) {
+		closest := rt.GetClosest(id, malus.K).Data()
+
+		hostlist = make([]interface{}, len(closest))
+
+		for i, ch := range closest {
+			wirehost := make([]interface{}, 3)
+			// TODO: handle non-UDP case!
+			wirehost[0] = ch.Host.Addr.(*net.UDPAddr).IP.String()
+			wirehost[1] = ch.Host.Addr.(*net.UDPAddr).Port
+			wirehost[2] = ch.Host.Id
+
+			hostlist[i] = wirehost
+		}
+		
+		return
 	}
 	cm.AddRPC("findnode", findnode)
 
