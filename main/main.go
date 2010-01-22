@@ -33,6 +33,12 @@ func main() {
 	cm.AddRPC("ping", malus.Ping)
 	cm.AddRPC("store", malus.Store)
 
+	findnode := func(rpc *malus.RPC, id string) []interface{} {
+		closest := rt.GetClosest().Data()
+		return make([]interface{}, 0)
+	}
+	cm.AddRPC("findnode", findnode)
+
 	fmt.Printf("registered\n")
 
 	/*print(bts)
