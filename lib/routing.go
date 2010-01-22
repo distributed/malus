@@ -280,7 +280,7 @@ func (rt *BRoutingTable) balanceleftright(lefti uint) {
 	left.hosts = newleft
 	right.hosts = newright
 
-	fmt.Printf("%v", rt)
+	//fmt.Printf("%v", rt)
 }
 
 
