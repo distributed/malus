@@ -7,13 +7,13 @@ import (
 )
 
 
-type Distance []byte
+type Distance []byte;
 
 
-func (d Distance) String() string { return hex.EncodeToString(d) }
-
+func (d Distance) String() string {
+	return hex.EncodeToString(d)
+}
 const K = 20
-
 func SHA1Bytes(b []byte) string {
 	h := sha1.New()
 	h.Write(b)
@@ -32,10 +32,10 @@ func XOR(a, b string) Distance {
 	if l != len(b) {
 		return nil
 	}
-
+	
 	d := make(Distance, l)
 
-	for i := 0; i < l; i++ {
+	for i := 0; i < l; i ++ {
 		d[i] = a[i] ^ b[i]
 	}
 
@@ -56,14 +56,14 @@ func BucketNo(d Distance) uint {
 			continue
 		}
 		var bitnr uint = 0
-		for i := 0; i < 8; i++ {
+		for i := 0; i < 8; i ++ {
 			if (b & (0x80 >> bitnr)) != 0 {
 				return basebitnr + bitnr
 			}
 			bitnr++
 		}
 	}
-
+	
 	return basebitnr
 }
 
@@ -75,7 +75,7 @@ func (a Distance) Less(b Distance) bool {
 
 	//fmt.Printf("distance Less called: %v < %v\n", a, b)
 
-	for i, ea := range a {
+	for i, ea := range(a) {
 		eb := b[i]
 		switch {
 		case ea < eb:
