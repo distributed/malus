@@ -63,6 +63,18 @@ func NewRTHostList() *RTHostList {
 	return r
 }
 
+// Copies an RTHost and computes the Distance of rh.Host to newref. If
+// newref is "", the old distance is used
+func (rh *RTHost) Copy(newref string) (rhc *RTHost) {
+	rhc = new(RTHost)
+	rhc.Host = rh.Host
+	if newref == "" {
+		newref = rh.Host.Id
+	}
+	rhc.Distance = XOR(newref, rhc.Host.Id)
+	return
+}
+
 func (l *RTHostList) Push(h *RTHost) { l.v.Push(h) }
 
 func (l *RTHostList) Len() int {
@@ -348,7 +360,7 @@ func (rt *BRoutingTable) GetClosest(t string, n uint) *RTHostList {
 	return <-r
 }
 
-// TODO: wtf behaviour? gets the closests n nodes to us close to t????
+
 // not goroutine safe. for internal use!
 func (rt *BRoutingTable) getClosest(t string, n uint) *RTHostList {
 	//rt.logger.Logf("looking for %x dist %v<br>\n", t, XOR(rt.id, t))
@@ -369,7 +381,7 @@ func (rt *BRoutingTable) getClosest(t string, n uint) *RTHostList {
 	var rn uint = 0
 
 	for _, el := range buckets[bucketno].hosts {
-		hl.Push(el)
+		hl.Push(el.Copy(t))
 		rn++
 	}
 
@@ -389,14 +401,14 @@ func (rt *BRoutingTable) getClosest(t string, n uint) *RTHostList {
 
 		if cangoup {
 			for _, el := range buckets[bucketno+delta].hosts {
-				hl.Push(el)
+				hl.Push(el.Copy(t))
 				rn++
 			}
 		}
 
 		if cangodown {
 			for _, el := range buckets[bucketno-delta].hosts {
-				hl.Push(el)
+				hl.Push(el.Copy(t))
 				rn++
 			}
 		}
