@@ -12,7 +12,10 @@ type Distance []byte
 
 func (d Distance) String() string { return hex.EncodeToString(d) }
 
-const K = 20
+const (
+	K = 20
+	MaxId = "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF"
+)
 
 // Hashes a byte slice and returns a 20 byte string.
 func SHA1Bytes(b []byte) string {
@@ -91,4 +94,8 @@ func (a Distance) Less(b Distance) bool {
 		}
 	}
 	return false
+}
+
+func FarthestNode(oid string) string {
+	return string(XOR(oid, MaxId))
 }
