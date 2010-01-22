@@ -99,6 +99,10 @@ func (l *RTHostList) Slice(i, j int) *RTHostList {
 	return r
 }
 
+func (l *RTHostList) Sort() {
+	sort.Sort(l)
+}
+
 func (l *RTHostList) Data() []*RTHost {
 	v := l.v
 	vl := v.Len()
