@@ -14,6 +14,7 @@ func (d Distance) String() string { return hex.EncodeToString(d) }
 
 const (
 	K = 20
+	Alpha = 3
 	MaxId = "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF"
 )
 
