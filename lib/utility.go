@@ -18,6 +18,10 @@ const (
 	MaxId = "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF"
 )
 
+var (
+	MaxDistance = Distance([]byte{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255})
+)
+
 // Hashes a byte slice and returns a 20 byte string.
 func SHA1Bytes(b []byte) string {
 	h := sha1.New()
