@@ -119,6 +119,14 @@ func (l *RTHostList) Data() []*RTHost {
 	return rs
 }
 
+func (l *RTHostList) At(i int) *RTHost {
+	return l.v.At(i).(*RTHost)
+}
+
+func (l *RTHostList) Append(m *RTHostList) {
+	l.v.AppendVector(m.v)
+}
+
 func NewBRoutingTable(id string) (rt *BRoutingTable) {
 	rt = new(BRoutingTable)
 
