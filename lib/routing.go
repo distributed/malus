@@ -105,7 +105,7 @@ func (l *RTHostList) Sort() {
 
 func (l *RTHostList) PopFront() (h *RTHost) {
 	h = l.v.At(0).(*RTHost)
-	l.v.Cut(0, 0)
+	l.v.Cut(0, 1)
 	return
 }
 
@@ -406,13 +406,11 @@ func (rt *BRoutingTable) getClosest(t string, n uint) *RTHostList {
 	rt.logger.Logf("match bucket: rn %d\n", rn)
 
 	// init for for loop
-	cangoup := bucketno < rt.maxbucket
-	cangodown := bucketno > 0
+	cangoup := (bucketno + 1) <= rt.maxbucket
+	cangodown := (bucketno - 1) >= 0
 	delta := 1
 
 	for (rn < n) && (cangoup || cangodown) {
-		cangoup = (bucketno + delta) < rt.maxbucket
-		cangodown = (bucketno - delta) > 0
 		//rt.logger.Logf("bucketno %d rt.maxbucket %d\n", bucketno, rt.maxbucket)
 		//rt.logger.Logf("bucketno - delta: %d. > 0: %v", bucketno-delta, (bucketno-delta) > 0)
 		//rt.logger.Logf("round delta %d cangoup %v cangodown %v\n", delta, cangoup, cangodown)
@@ -432,6 +430,8 @@ func (rt *BRoutingTable) getClosest(t string, n uint) *RTHostList {
 		}
 
 		delta++
+		cangoup = (bucketno + delta) < rt.maxbucket
+		cangodown = (bucketno - delta) > 0
 	}
 
 	//rt.logger.Logf("sorting %v...\n", hl)
