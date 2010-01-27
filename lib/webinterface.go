@@ -102,10 +102,24 @@ func (wi *WebInterface) getDummy() (func(*http.Conn, *http.Request)) {
 		default:
 			c.Write(strings.Bytes("das esch de rap shit: " + req.FormValue("rpc") + "<br> <a href=\"?rpc=ping\">ping now!</a><br>"))
 			fmt.Fprintf(c, "fuck\n")
+		case "find":
+			wi.find(c, req)
 		}
 		fmt.Fprintf(c, "<br><br>req counter: %s\n", wi.reqcounter.String())
 		fmt.Fprintf(c, "</tt>")
 	}
 
 	return dummy
+}
+
+
+func (wi *WebInterface) find(c *http.Conn, r *http.Request) {
+	hl := find(SHA1String("findkey"), wi.cm, wi.rt, nil)
+	for i := 0; i < hl.Len(); i++ {
+		el := hl.At(i)
+		fmt.Fprintf(c, "Host %02d: d %v | %x @ %v<br>\n", i,
+			el.Distance[0:5],
+			el.Host.Id,
+			el.Host.Addr)
+	}
 }
