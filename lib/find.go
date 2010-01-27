@@ -48,13 +48,13 @@ func robotParse(oid string, t string, retis []interface{}) (closest *RTHostList,
 			continue
 		}
 
-		port64, ok := wci[0].(int64)
+		port64, ok := wci[1].(int64)
 		if !ok {
 			continue
 		}
 		var port int = int(uint16(port64))
 
-		id, ok := wci[0].(string)
+		id, ok := wci[2].(string)
 		if !ok {
 			continue
 		}
