@@ -85,10 +85,10 @@ func (wi *WebInterface) getDummy() (func(*http.Conn, *http.Request)) {
 				fmt.Fprintf(c, "%x | %v @ %v<br>\n", el.Host.Id, el.Distance, el.Host.Addr)
 			}
 		case "seedrt":
-			seedmax := 1000
+			seedmax := 30
 			for i := 0; i < seedmax; i++ {
 				h := new(Host)
-				ps := fmt.Sprintf("%d", i+5000)
+				ps := fmt.Sprintf("%d", i+8003)
 				h.Addr, _ = net.ResolveUDPAddr("127.0.0.1:" + ps)
 				h.Id = SHA1String(ps)
 				wi.rt.SeeHost(h)
