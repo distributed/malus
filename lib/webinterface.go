@@ -8,7 +8,7 @@ import (
 	"os"
 	"net"
 	"expvar"
-	"malloc"
+	"runtime"
 )
 
 
@@ -95,8 +95,8 @@ func (wi *WebInterface) getDummy() (func(*http.Conn, *http.Request)) {
 			}
 			fmt.Fprintf(c, "seed rt with %d hosts<br>\n", seedmax)
 		case "gc":
-			malloc.GC()
-			stats := malloc.GetStats()
+			runtime.GC()
+			stats := runtime.MemStats
 			fmt.Fprintf(c, "stats: %v<br>\n", stats)
 			fmt.Fprintf(c, "=&gt; %d kbyte alloc / %d kbyte sys<br>\n", stats.Alloc / 1024, stats.Sys / 1024)
 		default:
