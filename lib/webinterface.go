@@ -3,7 +3,6 @@ package malus
 
 import (
 	"http"
-	"strings"
 	"fmt"
 	"os"
 	"net"
@@ -61,7 +60,7 @@ func (wi *WebInterface) getDummy() (func(*http.Conn, *http.Request)) {
 		fmt.Fprintf(c, "<tt>\n")
 		switch req.FormValue("rpc") {
 		case "ping":
-			c.Write(strings.Bytes("pinging... <br>"))
+			c.Write([]byte("pinging... <br>"))
 			retis, err := wi.cm.Call(raddr, "ping", make([]interface{}, 0))
 			fmt.Fprintf(c, "=> ping done! err %v retis %v\n", err, retis)
 		case "getsocket":
@@ -100,7 +99,7 @@ func (wi *WebInterface) getDummy() (func(*http.Conn, *http.Request)) {
 			fmt.Fprintf(c, "stats: %v<br>\n", stats)
 			fmt.Fprintf(c, "=&gt; %d kbyte alloc / %d kbyte sys<br>\n", stats.Alloc / 1024, stats.Sys / 1024)
 		default:
-			c.Write(strings.Bytes("das esch de rap shit: " + req.FormValue("rpc") + "<br> <a href=\"?rpc=ping\">ping now!</a><br>"))
+			c.Write([]byte("das esch de rap shit: " + req.FormValue("rpc") + "<br> <a href=\"?rpc=ping\">ping now!</a><br>"))
 			fmt.Fprintf(c, "fuck\n")
 		case "find":
 			wi.find(c, req)

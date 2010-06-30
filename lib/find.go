@@ -129,7 +129,7 @@ func find(t string, cm *CallManager, rt RoutingTable, bootstrap *RTHostList) *RT
 	}
 	
 	if kclosest.Len() == 0 {
-		panicln("nobody to ask...")
+		panic("nobody to ask...\n")
 	}
 
 	kclosest.Sort()
@@ -148,7 +148,7 @@ func find(t string, cm *CallManager, rt RoutingTable, bootstrap *RTHostList) *RT
 	for converging || finishing {
 		switch {
 		case converging && finishing:
-			panicln("find logic error")
+			panic("find logic error\n")
 		case converging:
 			fmt.Printf("find: convering round\n")
 		case finishing:

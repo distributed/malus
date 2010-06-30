@@ -17,7 +17,7 @@ func main() {
 
 	laddr, err := net.ResolveUDPAddr("0.0.0.0:7000")
 	if err != nil {
-		panicln("could not resolve addr")
+		panic("could not resolve addr\n")
 	}
 	tr := malus.NewUDPTransceiver("udp", laddr)
 	if tr == nil {

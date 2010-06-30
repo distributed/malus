@@ -2,7 +2,6 @@ package malus
 
 import (
 	"crypto/sha1"
-	"strings"
 	"encoding/hex"
 )
 
@@ -32,7 +31,7 @@ func SHA1Bytes(b []byte) string {
 // Hashes a string and returns a 20 byte string.
 func SHA1String(s string) string {
 	h := sha1.New()
-	h.Write(strings.Bytes(s))
+	h.Write([]byte(s))
 	return string(h.Sum())
 }
 
@@ -80,7 +79,7 @@ func BucketNo(d Distance) uint {
 
 func (a Distance) Less(b Distance) bool {
 	if len(a) != len(b) {
-		panicln("comparing distances of different lengths")
+		panic("comparing distances of different lengths\n")
 	}
 
 	//fmt.Printf("distance Less called: %v < %v\n", a, b)
@@ -102,5 +101,5 @@ func (a Distance) Less(b Distance) bool {
 }
 
 func FarthestNode(oid string) string {
-	return string(XOR(oid, MaxId))
+	return string([]byte(XOR(oid, MaxId)))
 }
